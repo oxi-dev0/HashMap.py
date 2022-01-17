@@ -15,9 +15,18 @@
  ```python
  hashmap = HashMap(size=500, hashlength=5, debugPrinting=False)
  ```
- - `size` = the size of the internal 2D array.
- - `hashlength` = the length of the hashed integer to use to locate a hash in the map. this will need to be compared with `size` to make sure it will not run over. Consult `sizecalc.py` or the comments within `HashMap.py` to find set size + hashlength combinations to use.
+ - `size` = the size of the internal 2D array. This defines the length for both x and y, so the max # items is `size^2`
+ - `hashlength` = the length of the hashed integer to use to locate a hash in the map. This is looped round using mod and integer division using `size`.
  - `debugPrinting` = enabling printing within the class.
+
+ #### Size + hashlength combinations
+ - `size:10, hashlength:2`
+ - `size:32, hashlength:3`
+ - `size:100, hashlength:4`
+ - `size:317, hashlength:5`
+ - `size:1000, hashlength:6`
+ - `size:3163, hashlength:7`
+ - `size:10000, hashlength:8`
 
  ### HashMap class functions
  ```python
