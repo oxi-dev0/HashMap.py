@@ -25,10 +25,11 @@ class HashMapPair(object):
 #For size 10000, max digits is 8: (99999999), X:9999, Y:9999
 
 class HashMap(object):
-    def __init__(self, size=500, hashlength=5):
+    def __init__(self, size=500, hashlength=5, debug=False):
         self.size = size
         self.hashlength = hashlength
         self.store = [[None]*self.size for i in range(self.size)]
+        self.debug = debug
 
     def hashstr(self, string):
         # SHA256 Hash a string into a 5 digit integer. Calculate hash length dynamically soon.
@@ -50,7 +51,8 @@ class HashMap(object):
                 self.store[x][y].val = val
             else:
                 # COLLISION
-                print(f"COLLISION: '{key}' ({hashed}) with '{self.store[x][y].key}' ({self.hashstr(self.store[x][y].key)}")
+                if self.debug:
+                    print(f"COLLISION: '{key}' ({hashed}) with '{self.store[x][y].key}' ({self.hashstr(self.store[x][y].key)} - X:{x}, Y:{y})")
 
                 # Find next available neighbour pos [WILL RUN INFINITELY IF BIGGER THAN ARRAY MAX]
                 validPos = False
@@ -62,6 +64,9 @@ class HashMap(object):
                     if newPos[0] > 0 and newPos[0] < self.size and newPos[1] > 0 and newPos[1] < self.size:
                         if self.store[newPos[0]][newPos[1]] == None:
                             validPos = True
+
+                if self.debug:
+                    print(f"Found suitable redirect location: {{X:{newPos[0]}, Y:{newPos[1]}}}")
 
                 # Make busy slot reference new collision slot
                 self.store[x][y].collisionrefs.append(newPos)
@@ -78,7 +83,8 @@ class HashMap(object):
         x, y = self.calcpos(hashed)
 
         if self.store[x][y] == None:
-            print(f"Key {key} ({hashed} - X:{x},Y:{y}) does not contain a value.")
+            if self.debug:
+                print(f"Key {key} ({hashed} - X:{x},Y:{y}) does not contain a value.")
         else:
             # Check if found object is correct
             if self.store[x][y].key == key:
@@ -91,7 +97,8 @@ class HashMap(object):
                         return ((refPos[0], refPos[1]), self.store[refPos[0]][refPos[1]].val)
 
                 # Did not find correct object
-                print(f"Key {key} ({hashed} - X:{x},Y:{y}) does not reference collided object (has not collided).")
+                if self.debug:
+                    print(f"Key {key} ({hashed} - X:{x},Y:{y}) does not reference collided object (has not collided).")
 
     def Remove(self, key):
         try:
@@ -99,7 +106,8 @@ class HashMap(object):
             x,y = pos
 
             if self.store[x][y] == None:
-                print(f"Key {key} (X:{x},Y:{y}) does not contain any value.")
+                if self.debug:
+                    print(f"Key {key} (X:{x},Y:{y}) does not contain any value.")
             else:
                 # Remove references to self
                 for reference in self.store[x][y].owncollisions:
@@ -132,7 +140,8 @@ class HashMap(object):
                     # Else, empty slot
                     self.store[x][y] = None
         except:
-            print(f"Failed to delete key {key}. Object was not found")
+            if self.debug:
+                print(f"Failed to delete key {key}. Object was not found")
 
     def DebugPrint(self):
         final = []

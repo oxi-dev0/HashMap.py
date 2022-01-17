@@ -1,6 +1,6 @@
 from HashMap import *
 
-hashmap = HashMap(10, 2)
+hashmap = HashMap(10, 2, True)
 
 def RunInstruction(instruction, params):
     if instruction == "add":
