@@ -10,6 +10,13 @@
  ### Files
  - `HashMap.py` contains the `HashMap` class that actually provides functionality.
  - `test.py`, `findcollisions.py` and `sizecalc.py` are all test scripts that allow interfacing / debugging for the class.
+ - `collidingkeys.txt` contains keys that collide for specific size + hashlength combination maps.
+ 
+ ### Importing
+ ```python
+ from HashMap import *
+ ```
+ This will import the HashMap class and the other Utility classes needed for the map to work/.
 
  ### Defining a map
  ```python
@@ -28,7 +35,7 @@
  - `size:3163, hashlength:7`
  - `size:10000, hashlength:8`
 
- ### HashMap class functions
+ ### Class functions
  ```python
  hashmap.Add(key, value)
  ```
