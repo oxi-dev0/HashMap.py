@@ -1,3 +1,4 @@
+# Oxi 17/01/22
 import hashlib
 
 class HashMapPair(object):
@@ -142,6 +143,21 @@ class HashMap(object):
         except:
             if self.debug:
                 print(f"Failed to delete key {key}. Object was not found")
+
+    def GetKeys(self):
+        final = []
+        for level1 in self.store:
+            sublevel = []
+            for item in level1:
+                if not item == None:
+                    final.append(item.key)
+        return final
+
+    def GetValues(self):
+        final = []
+        for key in self.GetKeys():
+            final.append(self.Find(key)[1])
+        return final
 
     def DebugPrint(self):
         final = []

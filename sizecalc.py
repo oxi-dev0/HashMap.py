@@ -1,3 +1,4 @@
+# Oxi 17/01/22
 from HashMap import *
 
 # For each array size, calculate the maximum hashed digits that can be used

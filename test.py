@@ -1,3 +1,4 @@
+# Oxi 17/01/22
 from HashMap import *
 
 hashmap = HashMap(10, 2, True)
@@ -27,6 +28,12 @@ def RunInstruction(instruction, params):
         print(f"Hash of key '{params[0]}' is {hashmap.hashstr(params[0])}")
     elif instruction == "print":
         hashmap.DebugPrint()
+    elif instruction == "keys":
+        print(hashmap.GetKeys())
+    elif instruction == "values":
+        print(hashmap.GetValues())
+    else:
+        print("Invalid Instruction")
 
 def ParseInstruction(string):
     sSplit = string.split(" ")
@@ -37,7 +44,7 @@ def ParseInstruction(string):
     else:
         RunInstruction(sSplit[0].lower(), None)
 
-print("-Instructions-\nAdd [Key] [Value]\nFind [Key]\nRemove [Key]\n\n-DEBUG-\nPosition [Key]\nHash [Key]")
+print("-Instructions-\nAdd [Key] [Value]\nFind [Key]\nRemove [Key]\nKeys\nValues\n\n-DEBUG-\nPosition [Key]\nHash [Key]\nPrint")
 
 while True:
     # Newline
