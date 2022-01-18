@@ -8,6 +8,10 @@ class HashMapPair(object):
         self.collisionrefs = []
         self.owncollisions = []
 
+        # COLLISIONS: where two keys get calculated to the same location. They should be bumped to the next available location, and referenced for lookups
+        # collisionrefs: items that have been knocked by item being there
+        # owncollisions: item that has knocked self by being there
+
     def __str__(self):
         return f"{{'{self.key}': {self.val}, collisionrefs: {self.collisionrefs}, owncollisions: {self.owncollisions}}}"
 
