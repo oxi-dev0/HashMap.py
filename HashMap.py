@@ -177,6 +177,11 @@ class HashMap(object):
             final.append(self.Find(key)[1])
         return final
 
+    def Clear(self):
+        self.store = [[None]*self.size for i in range(self.size)]
+        if self.debug:
+            print("Cleared map")
+
     def DebugPrint(self):
         final = []
         for level1 in self.store:
