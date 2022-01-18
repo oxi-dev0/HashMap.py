@@ -2,7 +2,7 @@
 from HashMap import *
 import random
 
-hashmap = HashMap(32, 3)
+hashmap = HashMap(10, 2)
 
 alpha = "abcdefghijklmnopqrstuwxyz"
 

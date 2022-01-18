@@ -3,6 +3,18 @@ from HashMap import *
 
 hashmap = HashMap(10, 2, True)
 
+def onlyDigits(seq):
+    seq_type= type(seq)
+    return seq_type().join(filter(seq_type.isdigit, seq))
+
+def MultiplierEval(string, i):
+    start = string.find("{")
+    end = string.find("}")
+    calc = string[start+1:end]
+    calc = calc.replace("i", str(i))
+    print(calc)
+    return eval(calc)
+
 def RunInstruction(instruction, params):
     if instruction == "add":
         hashmap.Add(params[0], params[1])
@@ -37,12 +49,26 @@ def RunInstruction(instruction, params):
 
 def ParseInstruction(string):
     sSplit = string.split(" ")
-    if len(sSplit) > 1:
-        key = sSplit[1]
-        value = " ".join(sSplit[2:])
-        RunInstruction(sSplit[0].lower(), (key, value))
+    nums = "0123456789"
+    multiplier = string.split("*")
+    if len(multiplier) == 1:
+        multiplier = 1
     else:
-        RunInstruction(sSplit[0].lower(), None)
+        multiplier = onlyDigits(multiplier[1].split(" ")[0])
+        
+    for i in range(int(multiplier)):
+        if len(sSplit) > 1:
+            key = sSplit[1].replace("{i}", str(MultiplierEval(sSplit[1], i)))
+            if not key.find("*") == -1:
+                key = key[:key.find("*")]
+      
+            value = " ".join(sSplit[2:]).replace("{i}", str(MultiplierEval(sSplit[2:], i)))
+            if not value.find("*") == -1:
+                value= value[:value.find("*")]
+                          
+            RunInstruction(sSplit[0].lower(), (key, value))
+        else:
+            RunInstruction(sSplit[0].lower(), None)
 
 print("-Instructions-\nAdd [Key] [Value]\nFind [Key]\nRemove [Key]\nKeys\nValues\n\n-DEBUG-\nPosition [Key]\nHash [Key]\nPrint")
 

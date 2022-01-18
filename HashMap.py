@@ -63,12 +63,23 @@ class HashMap(object):
                 validPos = False
                 newPos = (0,0)
                 offset = 0
+                dr = 1
                 while not validPos:
-                    offset+=1
+                    # Calculate location using offset from original hash
+                    offset+=dr
                     newPos=self.calcpos(hashed+offset)
+                    
+                    # If within store bounds
                     if newPos[0] > 0 and newPos[0] < self.size and newPos[1] > 0 and newPos[1] < self.size:
+                        # If no pair is taking up location
                         if self.store[newPos[0]][newPos[1]] == None:
                             validPos = True
+                    if newPos[0] < 0:
+                        if self.debug:
+                            print(f"Map is full.")
+                            return
+                    elif newPos[0] >= self.size:
+                        dr = -1
 
                 if self.debug:
                     print(f"Found suitable redirect location: {{X:{newPos[0]}, Y:{newPos[1]}}}")
@@ -84,6 +95,7 @@ class HashMap(object):
                 # owncollisions: item that has knocked self by being there
 
     def Find(self, key):
+        # Calculate true location O(1)
         hashed = self.hashstr(key)
         x, y = self.calcpos(hashed)
 
@@ -91,22 +103,24 @@ class HashMap(object):
             if self.debug:
                 print(f"Key {key} ({hashed} - X:{x},Y:{y}) does not contain a value.")
         else:
-            # Check if found object is correct
+            # Check if found object has correct key
             if self.store[x][y].key == key:
                 return ((x,y), self.store[x][y].val)
             else:
-                # Find correct object
+                # Key would have to have collided, so find in collision references O(n)
                 for refPos in self.store[x][y].collisionrefs:
+                    # If correct Key
                     if self.store[refPos[0]][refPos[1]].key == key:
-                        # Found collided correct object
+                        # Return correct pair
                         return ((refPos[0], refPos[1]), self.store[refPos[0]][refPos[1]].val)
 
-                # Did not find correct object
+                # Did not find collided key - must not have been addee
                 if self.debug:
-                    print(f"Key {key} ({hashed} - X:{x},Y:{y}) does not reference collided object (has not collided).")
+                    print(f"Key {key} ({hashed} - X:{x},Y:{y}) does not reference collided key (has not been entered).")
 
     def Remove(self, key):
         try:
+            # Find key location, traversing collision references
             pos = self.Find(key)[0]
             x,y = pos
 
@@ -114,17 +128,17 @@ class HashMap(object):
                 if self.debug:
                     print(f"Key {key} (X:{x},Y:{y}) does not contain any value.")
             else:
-                # Remove references to self
+                # Remove references to key being deleted
                 for reference in self.store[x][y].owncollisions:
                     self.store[reference[0]][reference[1]].collisionrefs.remove((x,y))
 
-                # Move references if any has collided
+                # Move references if any has collided with key being deleted
                 if len(self.store[x][y].collisionrefs) > 0:
                     
-                    # Decide collided object to be moved to location
+                    # Find primary collided key to be moved to key being deleted location
                     newPrimary = self.store[x][y].collisionrefs[0]
                     
-                    # For each object that has been collided by THAT object
+                    # For each object that has been collided by THAT key
                     for primaryRef in self.store[newPrimary[0]][newPrimary[1]].collisionrefs:
                         
                         # if new primary object is in their references, replace it with the new location
@@ -135,18 +149,18 @@ class HashMap(object):
                     # Transfer collision refs (minus primary)
                     self.store[newPrimary[0]][newPrimary[1]].collisionrefs = self.store[x][y].collisionrefs[1:]
                     
-                    # Move actual new primary
+                    # Move new primary in map store
                     self.store[x][y] = self.store[newPrimary[0]][newPrimary[1]]
                     self.store[newPrimary[0]][newPrimary[1]] = None
 
-                    # Remove old ref from new primary
+                    # Remove old key being deleted ref from new primary
                     self.store[x][y].owncollisions.remove((x,y))
                 else:
                     # Else, empty slot
                     self.store[x][y] = None
         except:
             if self.debug:
-                print(f"Failed to delete key {key}. Object was not found")
+                print(f"Failed to delete key {key}. Key was not found")
 
     def GetKeys(self):
         final = []
