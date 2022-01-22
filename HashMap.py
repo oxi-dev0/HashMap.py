@@ -35,6 +35,13 @@ class HashMap(object):
         self.hashlength = hashlength
         self.store = [[None]*self.size for i in range(self.size)]
         self.debug = debug
+    
+    def __str__(self):
+        keys = self.GetKeys()
+        debugSet = {}
+        for key in keys:
+            debugSet[key] = self.Find(key)[1]
+        return str(debugSet)
 
     def hashstr(self, string):
         # SHA256 Hash a string into a 5 digit integer. Calculate hash length dynamically soon.
