@@ -35,6 +35,33 @@ class HashMap(object):
         self.hashlength = hashlength
         self.store = [[None]*self.size for i in range(self.size)]
         self.debug = debug
+
+    def ToFile(self, f):
+        f = open(f, 'w')
+        keys = self.GetKeys()
+        vals = self.GetValues()
+        lines = []
+        lines.append(str(self.size) + "," + str(self.hashlength) + "," + str(self.debug))
+        for i in range(0,len(keys)):
+            line = (keys[i])+"~"+str(vals[i])
+            lines.append(line)
+
+        f.write('\n'.join(lines))
+        f.close()
+
+    @staticmethod
+    def FromFile(f):
+        f = open(f, 'r')
+        lines = f.readlines()
+        info = lines[0].split(",").trim()
+        hm = HashMap(info[0], info[1], info[2])
+        for line in lines[1:]:
+            data = line.split("~").trim()
+            key = data[0]
+            val = data[1]
+            hm.Add(key, val)
+        f.close()
+        return hm
     
     def __str__(self):
         keys = self.GetKeys()
@@ -200,6 +227,4 @@ class HashMap(object):
                     sublevel.append(str(item))
             final.append(f"[{', '.join(sublevel)}]")
         print(f"[{', '.join(final)}]")
-
-   # def GetKeys(self):
         
