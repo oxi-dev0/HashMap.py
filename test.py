@@ -8,6 +8,7 @@ def onlyDigits(seq):
     return seq_type().join(filter(seq_type.isdigit, seq))
 
 def RunInstruction(instruction, params):
+    global hashmap
     if instruction == "add":
         hashmap.Add(params[0], params[1])
         print(f"Added '{params[1]}' under key '{params[0]}' successfully.")
@@ -36,8 +37,10 @@ def RunInstruction(instruction, params):
         print(hashmap.GetKeys())
     elif instruction == "values":
         print(hashmap.GetValues())
+    elif instruction == "clear":
+        hashmap.Clear()
     elif instruction == "tofile":
-        print(hashmap.ToFile(params[0]))
+        print(hashmap.ToFile(params[0], params[1]))
     elif instruction == "fromfile":
         hashmap = HashMap.FromFile(params[0])
     else:
@@ -63,7 +66,7 @@ def ParseInstruction(string):
         else:
             RunInstruction(sSplit[0].lower(), None)
 
-print("-Instructions-\nAdd [Key] [Value]\nFind [Key]\nRemove [Key]\nKeys\nValues\nToFile [FileName]\n\n-DEBUG-\nPosition [Key]\nHash [Key]\nPrint")
+print("-Instructions-\nAdd [Key] [Value]\nFind [Key]\nRemove [Key]\nClear\nKeys\nValues\nToFile [Path] [Name]\nFromFile [File]\n\n-DEBUG-\nPosition [Key]\nHash [Key]\nPrint")
 
 while True:
     # Newline

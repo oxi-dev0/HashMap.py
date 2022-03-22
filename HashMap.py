@@ -36,11 +36,16 @@ class HashMap(object):
         self.store = [[None]*self.size for i in range(self.size)]
         self.debug = debug
 
-    def ToFile(self, f):
-        f = open(f, 'w')
+    def ToFile(self, path, name):
+        if len(path) > 0:
+            if path[-1] == "/" or path[-1] == "\\":
+                path = path
+            else:
+                path = F"{path}/"
+        f = open(f"{path}{name}.hm", 'w')
         keys = self.GetKeys()
         vals = self.GetValues()
-        lines = []
+        lines = ["[HASHMAP]"]
         lines.append(str(self.size) + "," + str(self.hashlength) + "," + str(self.debug))
         for i in range(0,len(keys)):
             line = (keys[i])+"~"+str(vals[i])
@@ -53,12 +58,15 @@ class HashMap(object):
     def FromFile(f):
         f = open(f, 'r')
         lines = f.readlines()
-        info = lines[0].split(",").trim()
-        hm = HashMap(info[0], info[1], info[2])
-        for line in lines[1:]:
-            data = line.split("~").trim()
-            key = data[0]
-            val = data[1]
+        if not lines[0].strip() == "[HASHMAP]":
+            print("Invalid File (NOT HASHMAP)")
+            return
+        info = lines[1].split(",")
+        hm = HashMap(int(info[0].strip()), int(info[1].strip()), bool(info[2].strip()))
+        for line in lines[2:]:
+            data = line.split("~")
+            key = data[0].strip()
+            val = data[1].strip()
             hm.Add(key, val)
         f.close()
         return hm
@@ -112,6 +120,7 @@ class HashMap(object):
                         if self.debug:
                             print(f"Map is full.")
                             return
+                        return
                     elif newPos[0] >= self.size:
                         dr = -1
 
